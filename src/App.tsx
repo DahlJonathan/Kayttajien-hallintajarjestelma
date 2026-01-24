@@ -1,5 +1,4 @@
-import Dropdown from "./components/dropdown.tsx"
-import SearchInput from "./components/searchInput.tsx"
+import SearchUser from "./components/searchUser.tsx"
 
 
 
@@ -13,8 +12,7 @@ function App() {
         Käyttäjien hallintajärjestelmä
       </div>
       <div className="flex flex-row gap-1 justify-center items-center">
-        <Dropdown />
-        <SearchInput />
+        <SearchUser />
       </div>
     </div>
   )
