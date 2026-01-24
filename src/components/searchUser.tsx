@@ -12,7 +12,6 @@ const API = "http://localhost:3000"
 
 export default function SearchUser() {
     const [open, setOpen] = useState(false);
-    const [search, setSearch] = useState<Search>("kaikki");
     const [value, setValue] = useState("");
     const [mode, setMode] = useState<Search>("kaikki");
     const [error, setError] = useState("");
@@ -24,7 +23,7 @@ export default function SearchUser() {
 
 
     function selectedSerch(value: Search) {
-        setSearch(value);
+        setMode(value);
         setOpen(false);
         setHasSearched(false);
     }
@@ -42,7 +41,16 @@ export default function SearchUser() {
 
             if (mode === "kaikki") {
                 url = `${API}/users`
+            } else if (mode === "id:llä") {
+                const id = Number(value);
+                if (id <= 0) {
+                    throw new Error("Id ei voi olla negatiivinen tai nolla");
+                }
+                url = `${API}/users/${value}`
+            } else {
+                url = `${API}/users/search?name=${value}`
             }
+
 
             const res = await fetch(url)
             const data = await res.json().catch(() => null)
@@ -52,7 +60,11 @@ export default function SearchUser() {
                 throw new Error(msg)
             }
 
-            setUsers(data as User[]);
+            if (mode === "kaikki" || mode === "nimellä") {
+                setUsers(data as User[]);
+            } else if (mode === "id:llä") {
+                setUsers([data as User]);
+            }
 
         } catch (err) {
             const message = err instanceof Error ? err.message : "Tuntematon virhe";
@@ -77,7 +89,7 @@ export default function SearchUser() {
                         onClick={() => setOpen(!open)}
                         className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded"
                     >
-                        Hae {search}
+                        Hae {mode}
                         <span className="text-xs pl-2">▼</span>
                     </button>
 
@@ -128,7 +140,7 @@ export default function SearchUser() {
 
             {/* error viesti */}
             {error && (
-                <div className="border border-red-300 bg-red-50 text-red-700 rounded p-3">
+                <div className="flex items-center justify-center border border-red-300 bg-red-50 text-red-700 rounded p-3">
                     {error}
                 </div>
             )}
