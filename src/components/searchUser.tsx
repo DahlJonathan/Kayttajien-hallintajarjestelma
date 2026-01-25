@@ -18,6 +18,12 @@ export default function SearchUser() {
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(false);
     const [hasSearched, setHasSearched] = useState(false);
+    const [addForm, setAddForm] = useState(false);
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [message, setMessage] = useState("");
+
+
 
 
 
@@ -28,13 +34,14 @@ export default function SearchUser() {
         setHasSearched(false);
     }
 
-
     //haku serveriltä hakuvalinnan perusteella
     async function handleSearch(e: React.FormEvent) {
         e.preventDefault();
         setError("");
         setLoading(true);
         setHasSearched(true);
+        setMessage("");
+
 
         try {
             let url = ""
@@ -43,8 +50,8 @@ export default function SearchUser() {
                 url = `${API}/users`
             } else if (mode === "id:llä") {
                 const id = Number(value);
-                if (id <= 0) {
-                    throw new Error("Id ei voi olla negatiivinen tai nolla");
+                if (id <= 0 || !Number.isInteger(id)) {
+                    throw new Error("Id pitää olla positiivinen kokonaisluku");
                 }
                 url = `${API}/users/${value}`
             } else {
@@ -56,7 +63,7 @@ export default function SearchUser() {
 
             if (!res.ok) {
                 const msg = data?.message || `Virhe (${res.status})`;
-                throw new Error(msg)
+                throw new Error(msg);
             }
 
             if (mode === "kaikki" || mode === "nimellä") {
@@ -65,10 +72,52 @@ export default function SearchUser() {
                 setUsers([data as User]);
             }
 
+            setMessage("Käyttäjät haettu");
+
         } catch (err) {
             const message = err instanceof Error ? err.message : "Tuntematon virhe";
             setError(message);
             setUsers([]);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const addUser = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setError("");
+        setLoading(true);
+        setMessage("");
+
+
+
+        try {
+            const res = await fetch(`${API}/users`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    name,
+                    email,
+                }),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                const msg = data?.message || `Virhe (${res.status})`;
+                throw new Error(msg);
+            }
+
+            setName("");
+            setEmail("");
+            setAddForm(false);
+            setMessage("Käyttäjä lisätty");
+
+        } catch (err) {
+            const message = err instanceof Error ? err.message : "Tuntematon virhe";
+            setError(message);
         } finally {
             setLoading(false);
         }
@@ -136,7 +185,67 @@ export default function SearchUser() {
                         {loading ? "Ladataan..." : "Hae"}
                     </button>
                 </form>
+
+                <div>
+                    <button
+                        onClick={() => setAddForm(true)}
+                        className="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700 disabled:opacity-60"
+                    >
+                        lisää käyttäjä
+                    </button>
+                </div>
             </div>
+            {message && (
+                <div className="text-green-700 text-2xl font-bold mb-3 flex item-center justify-center">
+                    {message}
+                </div>
+            )}
+
+            {/* lisää käyttäjä */}
+
+            {addForm && (
+                <form onSubmit={addUser} className="space-y-3 max-w-md">
+                    <div>
+                        <label className="block text-sm font-medium mb-1">
+                            Nimi
+                        </label>
+                        <input
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            className="w-full border rounded px-3 py-2"
+                            placeholder="Anna nimi"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium mb-1">
+                            Sähköposti
+                        </label>
+                        <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="w-full border rounded px-3 py-2"
+                            placeholder="anna@example.com"
+                        />
+                    </div>
+
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="px-4 py-2 rounded bg-green-600 text-white hover:bg-blue-700 disabled:opacity-60"
+                    >
+                        {loading ? "Tallennetaan..." : "Lisää"}
+                    </button>
+
+                    {error && (
+                        <div className="border border-red-300 bg-red-50 text-red-700 rounded p-2">
+                            {error}
+                        </div>
+                    )}
+                </form>
+
+            )}
 
             {/* error viesti */}
             {error && (
@@ -148,17 +257,6 @@ export default function SearchUser() {
             {/* Hakutulokset */}
             {hasSearched && (
                 <div>
-                    {users.length > 0 && !loading && !error && (
-                        <div className="text-green-700 text-2xl font-bold mb-3 flex item-center justify-center">
-                            Tulokset
-                        </div>
-                    )}
-
-                    {users.length === 0 && !loading && !error && (
-                        <div className="text-red-700 text-2xl font-bold mb-3 flex items-center justify-center">
-                            Ei tuloksia
-                        </div>
-                    )}
 
                     {/* käyttäjä lista */}
                     <ul className="space-y-2">

@@ -6,6 +6,8 @@ const app = express();
 const PORT = 3000;
 
 app.use(Cors({ origin: "http://localhost:5173" }));
+app.use(express.json());
+
 
 const db = new Database("database.db");
 
@@ -17,6 +19,37 @@ db.prepare(`
         email TEXT NOT NULL
     )
 `).run();
+
+app.post("/users", (req, res) => {
+    try {
+        const { name, email } = req.body;
+
+        if (!name || !email) {
+            return res.status(400).json({
+                message: "Nimi ja sähköposti ovat pakollisia"
+            });
+        }
+
+        const insert = db.prepare(
+            "INSERT INTO users (name, email) VALUES (?, ?)"
+        );
+
+        const result = insert.run(name, email);
+
+        const newUser = db
+            .prepare("SELECT * FROM users WHERE id = ?")
+            .get(result.lastInsertRowid);
+
+        return res.status(201).json(newUser);
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({
+            message: "Tietokantavirhe"
+        });
+    }
+});
+
 
 app.get("/users", (req, res) => {
     try {
@@ -49,6 +82,7 @@ app.get("/users/search", (req, res) => {
 app.get("/users/:id", (req, res) => {
     try {
         const userId = req.params.id;
+
         const user = db.prepare("SELECT * FROM users WHERE id = ?").get(userId);
         if (user) {
             res.json(user);
