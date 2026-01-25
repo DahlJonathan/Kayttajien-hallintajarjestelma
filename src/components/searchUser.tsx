@@ -51,7 +51,6 @@ export default function SearchUser() {
                 url = `${API}/users/search?name=${value}`
             }
 
-
             const res = await fetch(url)
             const data = await res.json().catch(() => null)
 
@@ -126,7 +125,8 @@ export default function SearchUser() {
                         value={value}
                         onChange={(e) => setValue(e.target.value)}
                         placeholder={placeholder}
-                        className="flex-1 border rounded px-3 py-2 focus:outline-none focus:ring"
+                        disabled={loading || mode === "kaikki"}
+                        className="flex-1 border rounded px-3 py-2 focus:outline-none focus:ring bg-white disabled:bg-gray-200 disabled:cursor-not-allowed"
                     />
                     <button
                         type="submit"
