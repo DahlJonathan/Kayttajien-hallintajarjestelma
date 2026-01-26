@@ -43,4 +43,6 @@ kun hakee kaikki käyttäjät niin tekstikenttä on poistettu käytöstä ja voi
 kun hakee nimellä niin voi kirjoittaa osittain nimeä tai koko nimeä tekstikenttään ja hakea painamalla hae.
 jos hakee id perusteella niin kirjoittaa vain id (numero) ja hakea painamalla hae. id ei voi olla 0 tai negatiivinen.
 
+# Lisää käyttäjä
 
+kun painat lisää käyttäjä niin avautuu valikko missä voit laittaa käyttäjän nimi ja sähköposti

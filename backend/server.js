@@ -26,15 +26,26 @@ app.post("/users", (req, res) => {
 
         if (!name || !email) {
             return res.status(400).json({
-                message: "Nimi ja sähköposti ovat pakollisia"
+                message: "Nimi ja sähköposti ovat pakollisia",
             });
         }
 
-        const insert = db.prepare(
-            "INSERT INTO users (name, email) VALUES (?, ?)"
-        );
+        // tarkistaa onko käyttyäjää olemassa sähköpostin perusteella
+        const existingUser = db
+            .prepare("SELECT id FROM users WHERE email = ?")
+            .get(email);
 
-        const result = insert.run(name, email);
+        if (existingUser) {
+            return res.status(409).json({
+                message: "Käyttäjä on jo olemassa",
+            });
+        }
+
+        // lisää käyttäjä
+        const result = db
+            .prepare("INSERT INTO users (name, email) VALUES (?, ?)")
+            .run(name, email);
+
 
         const newUser = db
             .prepare("SELECT * FROM users WHERE id = ?")
@@ -45,7 +56,7 @@ app.post("/users", (req, res) => {
     } catch (err) {
         console.error(err);
         return res.status(500).json({
-            message: "Tietokantavirhe"
+            message: "Tietokantavirhe",
         });
     }
 });
@@ -65,6 +76,10 @@ app.get("/users/search", (req, res) => {
     try {
         const name = String(req.query.name || "").trim();
 
+        if (!name) {
+            return res.status(400).json({ message: "nimi puuttuu" });
+        }
+
         const users = db
             .prepare("SELECT * FROM users WHERE name LIKE ?")
             .all(`%${name}%`);
@@ -75,6 +90,7 @@ app.get("/users/search", (req, res) => {
         return res.status(500).json({ message: "Tietokantavirhe" });
     }
 });
+
 
 app.get("/users/:id", (req, res) => {
     try {

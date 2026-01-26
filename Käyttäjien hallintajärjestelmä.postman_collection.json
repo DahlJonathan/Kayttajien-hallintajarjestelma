@@ -1,0 +1,775 @@
+{
+  "info": {
+    "_postman_id": "134dcc02-0feb-4ec0-915b-2606e6970f53",
+    "name": "Käyttäjien hallintajärjestelmä",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "51820541",
+    "_collection_link": "https://go.postman.co/collection/51820541-134dcc02-0feb-4ec0-915b-2606e6970f53?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Hakee kaikki käyttäjät",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/users",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "users"
+          ]
+        },
+        "description": "Hakee kaikki käyttäjät tietokannasta. Palauttaa tyhjän listan, jos käyttäjiä ei löydy. Virhetilanteessa palauttaa viestin 'Tietokantavirhe'"
+      },
+      "response": [
+        {
+          "name": "output",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/users",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": null,
+          "header": [
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            },
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "http://localhost:5173"
+            },
+            {
+              "key": "Vary",
+              "value": "Origin"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Content-Length",
+              "value": "730"
+            },
+            {
+              "key": "ETag",
+              "value": "W/\"2da-3im8FD5i4bghPzWmoXurGhUkXcs\""
+            },
+            {
+              "key": "Date",
+              "value": "Mon, 26 Jan 2026 10:48:10 GMT"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=5"
+            }
+          ],
+          "cookie": [],
+          "body": "[\n    {\n        \"id\": 1,\n        \"name\": \"Käyttäjä1\",\n        \"email\": \"testi1@example.com\"\n    },\n    {\n        \"id\": 2,\n        \"name\": \"Käyttäjä2\",\n        \"email\": \"testi2@example.com\"\n    },\n    {\n        \"id\": 3,\n        \"name\": \"Käyttäjä3\",\n        \"email\": \"testi3@example.com\"\n    },\n    {\n        \"id\": 4,\n        \"name\": \"Käyttäjä4\",\n        \"email\": \"testi4@example.com\"\n    },\n    {\n        \"id\": 5,\n        \"name\": \"jonathan\",\n        \"email\": \"123@111.com\"\n    },\n    {\n        \"id\": 6,\n        \"name\": \"dsds\",\n        \"email\": \"dsd@dsds\"\n    },\n    {\n        \"id\": 7,\n        \"name\": \"fdfds\",\n        \"email\": \"123@123\"\n    },\n    {\n        \"id\": 8,\n        \"name\": \"Oona\",\n        \"email\": \"oona@123.123\"\n    },\n    {\n        \"id\": 9,\n        \"name\": \"Maria\",\n        \"email\": \"maria@12345\"\n    },\n    {\n        \"id\": 10,\n        \"name\": \"hgfhd\",\n        \"email\": \"dahl89@live.com\"\n    },\n    {\n        \"id\": 11,\n        \"name\": \"ddd\",\n        \"email\": \"ddd@jjj\"\n    },\n    {\n        \"id\": 12,\n        \"name\": \"fdsf\",\n        \"email\": \"ffff@jjj\"\n    },\n    {\n        \"id\": 13,\n        \"name\": \"testi\",\n        \"email\": \"testi@testi\"\n    },\n    {\n        \"id\": 14,\n        \"name\": \"joo\",\n        \"email\": \"joo@joo\"\n    },\n    {\n        \"id\": 15,\n        \"name\": \"joo\",\n        \"email\": \"joo@joo\"\n    }\n]"
+        },
+        {
+          "name": "tietokantavirhe",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/users",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{\r\n  \"message\": \"Tietokantavirhe\"\r\n}"
+        }
+      ]
+    },
+    {
+      "name": "Hae käyttäjä nimellä",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/users/search?name=",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "users",
+            "search"
+          ],
+          "query": [
+            {
+              "key": "name",
+              "value": ""
+            }
+          ]
+        },
+        "description": "voit hakea käyttäjää nimellä"
+      },
+      "response": [
+        {
+          "name": "output",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/users/search?name=jonathan",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "users",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "jonathan"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": null,
+          "header": [
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            },
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "http://localhost:5173"
+            },
+            {
+              "key": "Vary",
+              "value": "Origin"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Content-Length",
+              "value": "50"
+            },
+            {
+              "key": "ETag",
+              "value": "W/\"32-k1c9o7tOVo8/32jtSGkFbXD8Tq4\""
+            },
+            {
+              "key": "Date",
+              "value": "Mon, 26 Jan 2026 10:58:57 GMT"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=5"
+            }
+          ],
+          "cookie": [],
+          "body": "[\n    {\n        \"id\": 5,\n        \"name\": \"jonathan\",\n        \"email\": \"123@111.com\"\n    }\n]"
+        },
+        {
+          "name": "nimi puuttuu",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/users/search?name=",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "users",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "name",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "_postman_previewlanguage": null,
+          "header": [
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            },
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "http://localhost:5173"
+            },
+            {
+              "key": "Vary",
+              "value": "Origin"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Content-Length",
+              "value": "26"
+            },
+            {
+              "key": "ETag",
+              "value": "W/\"1a-zQuzGOhxadAmLzcf4VyCXM/m6AA\""
+            },
+            {
+              "key": "Date",
+              "value": "Mon, 26 Jan 2026 11:21:24 GMT"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=5"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"message\": \"nimi puuttuu\"\n}"
+        },
+        {
+          "name": "Hae käyttäjä nimellä",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/users/search?name=jonathan",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "users",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "jonathan"
+                }
+              ]
+            }
+          },
+          "_postman_previewlanguage": "",
+          "header": [],
+          "cookie": [
+            {
+              "expires": "Invalid Date",
+              "domain": "",
+              "path": ""
+            }
+          ],
+          "body": "{\r\n  \"message\": \"Tietokantavirhe\"\r\n}"
+        }
+      ]
+    },
+    {
+      "name": "hae käyttäjä id:llä",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/users/5",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "users",
+            "5"
+          ]
+        },
+        "description": "voit hakea käyttäjää id perusteella"
+      },
+      "response": [
+        {
+          "name": "output",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/users/5",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "users",
+                "5"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": null,
+          "header": [
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            },
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "http://localhost:5173"
+            },
+            {
+              "key": "Vary",
+              "value": "Origin"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Content-Length",
+              "value": "48"
+            },
+            {
+              "key": "ETag",
+              "value": "W/\"30-C49nLQo7+fg/D0uzylqj0eKjW8Y\""
+            },
+            {
+              "key": "Date",
+              "value": "Mon, 26 Jan 2026 11:07:07 GMT"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=5"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"id\": 5,\n    \"name\": \"jonathan\",\n    \"email\": \"123@111.com\"\n}"
+        },
+        {
+          "name": "käyttäjä ei löydy",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/users/h",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "users",
+                "h"
+              ]
+            }
+          },
+          "status": "Not Found",
+          "code": 404,
+          "_postman_previewlanguage": null,
+          "header": [
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            },
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "http://localhost:5173"
+            },
+            {
+              "key": "Vary",
+              "value": "Origin"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Content-Length",
+              "value": "40"
+            },
+            {
+              "key": "ETag",
+              "value": "W/\"28-T5zE/xPcwFRPYD16hB8uSakOAGU\""
+            },
+            {
+              "key": "Date",
+              "value": "Mon, 26 Jan 2026 11:22:41 GMT"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=5"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"message\": \"Käyttäjää ei löytynyt\"\n}"
+        },
+        {
+          "name": "tietokantavirhe",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/users/5",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "users",
+                "5"
+              ]
+            }
+          },
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{\r\n  \"message\": \"Tietokantavirhe\"\r\n}"
+        }
+      ]
+    },
+    {
+      "name": "Lisää käyttäjä",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/users",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "users"
+          ]
+        },
+        "description": "voit lisätä käyttäjää"
+      },
+      "response": [
+        {
+          "name": "output",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Matti Meikäläinen\",\r\n  \"email\": \"matti@esimerkki.fi\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/users",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "status": "Created",
+          "code": 201,
+          "_postman_previewlanguage": null,
+          "header": [
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            },
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "http://localhost:5173"
+            },
+            {
+              "key": "Vary",
+              "value": "Origin"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Content-Length",
+              "value": "67"
+            },
+            {
+              "key": "ETag",
+              "value": "W/\"43-E7B+0lCVwTD8BM3AdS1l3R+Ygo8\""
+            },
+            {
+              "key": "Date",
+              "value": "Mon, 26 Jan 2026 11:14:24 GMT"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=5"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"id\": 16,\n    \"name\": \"Matti Meikäläinen\",\n    \"email\": \"matti@esimerkki.fi\"\n}"
+        },
+        {
+          "name": "puuttuvia tietoja",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"\",\r\n  \"email\": \"matti@esimerkki.fi\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/users",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "_postman_previewlanguage": null,
+          "header": [
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            },
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "http://localhost:5173"
+            },
+            {
+              "key": "Vary",
+              "value": "Origin"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Content-Length",
+              "value": "50"
+            },
+            {
+              "key": "ETag",
+              "value": "W/\"32-j9br6prQBAXRF2098ToujkMYKrU\""
+            },
+            {
+              "key": "Date",
+              "value": "Mon, 26 Jan 2026 11:14:48 GMT"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=5"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"message\": \"Nimi ja sähköposti ovat pakollisia\"\n}"
+        },
+        {
+          "name": "sähköposti olemassa",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Matti Meikäläinen\",\r\n  \"email\": \"matti@esimerkki.fi\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/users",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "status": "Conflict",
+          "code": 409,
+          "_postman_previewlanguage": null,
+          "header": [
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            },
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "http://localhost:5173"
+            },
+            {
+              "key": "Vary",
+              "value": "Origin"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Content-Length",
+              "value": "40"
+            },
+            {
+              "key": "ETag",
+              "value": "W/\"28-YH5/f2slnqx4g08hDDWhdaT5g/M\""
+            },
+            {
+              "key": "Date",
+              "value": "Mon, 26 Jan 2026 11:15:33 GMT"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=5"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"message\": \"Käyttäjä on jo olemassa\"\n}"
+        },
+        {
+          "name": "tietkantavirhe",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/users",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "_postman_previewlanguage": null,
+          "header": [
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            },
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "http://localhost:5173"
+            },
+            {
+              "key": "Vary",
+              "value": "Origin"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Content-Length",
+              "value": "29"
+            },
+            {
+              "key": "ETag",
+              "value": "W/\"1d-UV51uKbRWQ+LvXvne9Tpq0EKX/Q\""
+            },
+            {
+              "key": "Date",
+              "value": "Mon, 26 Jan 2026 11:18:32 GMT"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=5"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"message\": \"Tietokantavirhe\"\n}"
+        }
+      ]
+    }
+  ]
+}

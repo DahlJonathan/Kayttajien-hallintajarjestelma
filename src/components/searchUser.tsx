@@ -81,7 +81,12 @@ export default function SearchUser() {
                 setUsers([data as User]);
             }
 
-            setMessage("Käyttäjät haettu");
+            if (data.length === 0) {
+                setError("Käyttäjää ei löytynyt");
+            } else {
+                setMessage("Käyttäjät haettu");
+            }
+
 
         } catch (err) {
             const message = err instanceof Error ? err.message : "Tuntematon virhe";
@@ -201,6 +206,7 @@ export default function SearchUser() {
                             setAddForm(true);
                             setHasSearched(false);
                             setMessage("");
+                            setError("");
                         }}
                         className="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700 disabled:opacity-60"
                     >
@@ -251,12 +257,19 @@ export default function SearchUser() {
                     >
                         {loading ? "Tallennetaan..." : "Lisää"}
                     </button>
-
-                    {error && (
-                        <div className="border border-red-300 bg-red-50 text-red-700 rounded p-2">
-                            {error}
-                        </div>
-                    )}
+                    <button
+                        onClick={() => {
+                            setAddForm(false);
+                            setHasSearched(false);
+                            setMessage("");
+                            setError("");
+                            setName("");
+                            setEmail("");
+                        }}
+                        className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700 disabled:opacity-60 ml-2"
+                    >
+                        Peruuta
+                    </button>
                 </form>
 
             )}
