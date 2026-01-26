@@ -65,9 +65,6 @@ app.get("/users/search", (req, res) => {
     try {
         const name = String(req.query.name || "").trim();
 
-        if (!name) {
-            return res.status(400).json({ message: "nimi puuttuu" });
-        }
         const users = db
             .prepare("SELECT * FROM users WHERE name LIKE ?")
             .all(`%${name}%`);

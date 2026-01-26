@@ -23,11 +23,6 @@ export default function SearchUser() {
     const [email, setEmail] = useState("");
     const [message, setMessage] = useState("");
 
-
-
-
-
-
     function selectedSerch(value: Search) {
         setMode(value);
         setOpen(false);
@@ -48,13 +43,27 @@ export default function SearchUser() {
 
             if (mode === "kaikki") {
                 url = `${API}/users`
-            } else if (mode === "id:llä") {
+            }
+
+            if (mode === "id:llä") {
+                if (value.trim() === "") {
+                    setError("Anna ID");
+                    return;
+                }
+
                 const id = Number(value);
-                if (id <= 0 || !Number.isInteger(id)) {
-                    throw new Error("Id pitää olla positiivinen kokonaisluku");
+                if (!Number.isInteger(id) || id <= 0) {
+                    setError("ID:n pitää olla positiivinen numero");
+                    return;
                 }
                 url = `${API}/users/${value}`
-            } else {
+            }
+
+            if (mode === "nimellä") {
+                if (value.trim() === "") {
+                    setError("Nimi puuttuu");
+                    return;
+                }
                 url = `${API}/users/search?name=${value}`
             }
 
@@ -188,13 +197,18 @@ export default function SearchUser() {
 
                 <div>
                     <button
-                        onClick={() => setAddForm(true)}
+                        onClick={() => {
+                            setAddForm(true);
+                            setHasSearched(false);
+                            setMessage("");
+                        }}
                         className="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700 disabled:opacity-60"
                     >
                         lisää käyttäjä
                     </button>
                 </div>
             </div>
+
             {message && (
                 <div className="text-green-700 text-2xl font-bold mb-3 flex item-center justify-center">
                     {message}
