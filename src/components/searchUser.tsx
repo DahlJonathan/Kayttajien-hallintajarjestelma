@@ -14,20 +14,35 @@ export default function SearchUser() {
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState("");
     const [mode, setMode] = useState<Search>("kaikki");
-    const [error, setError] = useState("");
+    const [error, setError] = useState<String | null>(null);
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(false);
     const [hasSearched, setHasSearched] = useState(false);
     const [addForm, setAddForm] = useState(false);
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
-    const [message, setMessage] = useState("");
+    const [message, setMessage] = useState<string | null>(null);
+    const [editingId, setEditingId] = useState<number | null>(null);
+    const [editName, setEditName] = useState("");
+    const [editEmail, setEditEmail] = useState("");
 
     function selectedSerch(value: Search) {
         setMode(value);
         setOpen(false);
         setHasSearched(false);
+        setAddForm(false);
+        setError("");
+        setMessage("");
     }
+
+    const startEdit = (u: User) => {
+        setEditingId(u.id);
+        setEditName(u.name);
+        setEditEmail(u.email);
+        setError("");
+        setMessage("");
+    };
+
 
     //haku serveriltä hakuvalinnan perusteella
     async function handleSearch(e: React.FormEvent) {
@@ -48,12 +63,14 @@ export default function SearchUser() {
             if (mode === "id:llä") {
                 if (value.trim() === "") {
                     setError("Anna ID");
+                    setHasSearched(false);
                     return;
                 }
 
                 const id = Number(value);
                 if (!Number.isInteger(id) || id <= 0) {
                     setError("ID:n pitää olla positiivinen numero");
+                    setHasSearched(false);
                     return;
                 }
                 url = `${API}/users/${value}`
@@ -62,12 +79,15 @@ export default function SearchUser() {
             if (mode === "nimellä") {
                 if (value.trim() === "") {
                     setError("Nimi puuttuu");
+                    setHasSearched(false);
                     return;
                 }
                 url = `${API}/users/search?name=${value}`
             }
 
             const res = await fetch(url)
+
+            //muuntaa vastauksen json ja jos epäonnistuu palauttaa null
             const data = await res.json().catch(() => null)
 
             if (!res.ok) {
@@ -76,8 +96,10 @@ export default function SearchUser() {
             }
 
             if (mode === "kaikki" || mode === "nimellä") {
+                //palauttaa lista
                 setUsers(data as User[]);
             } else if (mode === "id:llä") {
+                //palauttaa yksi käyttäjä
                 setUsers([data as User]);
             }
 
@@ -97,13 +119,46 @@ export default function SearchUser() {
         }
     }
 
+    const saveEdit = async () => {
+        if (editingId === null) return;
+
+        setLoading(true);
+        setError("");
+        setMessage("");
+
+        try {
+            const res = await fetch(`${API}/users/${editingId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name: editName, email: editEmail }),
+            });
+
+            //muuntaa vastauksen json jos epäonnistuu palauttaa null
+            const data = await res.json().catch(() => null);
+
+            if (!res.ok) {
+                const msg = data?.message || `Virhe (${res.status})`;
+                throw new Error(msg);
+            }
+
+            // päivitä lista ilman uutta hakua
+            setUsers((prev) => prev.map((u) => (u.id === editingId ? data : u)));
+
+            setEditingId(null);
+            setMessage("Käyttäjä päivitetty");
+        } catch (err) {
+            setError(err instanceof Error ? err.message : "Tuntematon virhe");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
     const addUser = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setError("");
         setLoading(true);
         setMessage("");
-
-
 
         try {
             const res = await fetch(`${API}/users`, {
@@ -284,25 +339,68 @@ export default function SearchUser() {
             {/* Hakutulokset */}
             {hasSearched && (
                 <div>
-
                     {/* käyttäjä lista */}
                     <ul className="space-y-2">
                         {users.map((u) => (
-                            <li
-                                key={u.id}
-                                className="flex justify-between items-center border p-2"
-                            >
-                                <span>
-                                    <span className="font-medium">{u.name}</span>{" "}
-                                    <span className="text-gray-700">({u.email})</span>
-                                </span>
-                                <span className="text-black">#{u.id}</span>
+                            <li key={u.id} className="border p-2 rounded flex justify-between items-center">
+                                {editingId === u.id ? (
+                                    <div className="flex gap-2 items-center">
+                                        <input
+                                            value={editName}
+                                            onChange={(e) => setEditName(e.target.value)}
+                                            className="border rounded px-2 py-1"
+                                        />
+                                        <input
+                                            value={editEmail}
+                                            onChange={(e) => setEditEmail(e.target.value)}
+                                            className="border rounded px-2 py-1"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={saveEdit}
+                                            disabled={loading}
+                                            className="px-3 py-1 rounded bg-blue-600 text-white disabled:opacity-60"
+                                        >
+                                            Tallenna
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setEditingId(null)}
+                                            className="px-3 py-1 rounded bg-gray-200"
+                                        >
+                                            Peruuta
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <div>
+                                            <span className="font-medium">{u.name}</span>{" "}
+                                            <span className="text-gray-600">({u.email})</span>
+                                        </div>
+                                        <div className="flex items-center gap-4">
+                                            <span className="text-gray-500">#{u.id}</span>
+                                            <button
+                                                type="button"
+                                                onClick={() => startEdit(u)}
+                                                className="px-3 py-1 rounded bg-yellow-500 text-white"
+                                            >
+                                                Muokkaa
+                                            </button>
+                                        </div>
+                                    </>
+
+                                )}
                             </li>
                         ))}
+
                     </ul>
                 </div>
             )}
+
         </div>
+
+
     );
 
 }
+

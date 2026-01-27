@@ -46,3 +46,10 @@ jos hakee id perusteella niin kirjoittaa vain id (numero) ja hakea painamalla ha
 # Lisää käyttäjä
 
 kun painat lisää käyttäjä niin avautuu valikko missä voit laittaa käyttäjän nimi ja sähköposti
+
+# muokkaa käyttäjää
+
+valitse muokkaa nappi sen käyttäjän kohdalla mikä haluat muokata.
+käyttäjän alle avautuu 2 kenttää missä voit muokata nimi ja sähköposti.
+
+

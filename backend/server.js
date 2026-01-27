@@ -61,6 +61,44 @@ app.post("/users", (req, res) => {
     }
 });
 
+app.put("/users/:id", (req, res) => {
+    try {
+        const id = Number(req.params.id);
+        const { name, email } = req.body;
+
+        if (!Number.isInteger(id) || id <= 0) {
+            return res.status(400).json({ message: "Virheellinen id" });
+        }
+
+        if (!name || !email) {
+            return res.status(400).json({ message: "Nimi ja sähköposti ovat pakollisia" });
+        }
+
+        // tarkista että käyttäjä on olemassa
+        const existing = db.prepare("SELECT id FROM users WHERE id = ?").get(id);
+        if (!existing) {
+            return res.status(404).json({ message: "Käyttäjää ei löytynyt" });
+        }
+
+        // tarkista että email ei ole käytössä toisella käyttäjällä
+        const existingEmail = db
+            .prepare("SELECT id FROM users WHERE email = ? AND id != ?")
+            .get(email, id);
+
+        if (existingEmail) {
+            return res.status(409).json({ message: "Sähköposti on jo käytössä" });
+        }
+
+        db.prepare("UPDATE users SET name = ?, email = ? WHERE id = ?").run(name, email, id);
+
+        const updatedUser = db.prepare("SELECT * FROM users WHERE id = ?").get(id);
+        return res.json(updatedUser);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Tietokantavirhe" });
+    }
+});
+
 
 app.get("/users", (req, res) => {
     try {
@@ -74,6 +112,8 @@ app.get("/users", (req, res) => {
 
 app.get("/users/search", (req, res) => {
     try {
+        
+        // ottaa URL:stä stringin ja poistaa turhat välilyönnit
         const name = String(req.query.name || "").trim();
 
         if (!name) {
