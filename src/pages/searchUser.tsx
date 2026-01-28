@@ -14,7 +14,7 @@ export default function SearchUser() {
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState("");
     const [mode, setMode] = useState<Search>("kaikki");
-    const [error, setError] = useState<String | null>(null);
+    const [error, setError] = useState<string | null>(null);
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(false);
     const [hasSearched, setHasSearched] = useState(false);
@@ -25,6 +25,8 @@ export default function SearchUser() {
     const [editingId, setEditingId] = useState<number | null>(null);
     const [editName, setEditName] = useState("");
     const [editEmail, setEditEmail] = useState("");
+    const [page, setPage] = useState(1);
+    const pagesize = 5;
 
     function selectedSerch(value: Search) {
         setMode(value);
@@ -98,9 +100,11 @@ export default function SearchUser() {
             if (mode === "kaikki" || mode === "nimellä") {
                 //palauttaa lista
                 setUsers(data as User[]);
+                setPage(1);
             } else if (mode === "id:llä") {
                 //palauttaa yksi käyttäjä
                 setUsers([data as User]);
+                setPage(1);
             }
 
             if (data.length === 0) {
@@ -119,7 +123,7 @@ export default function SearchUser() {
         }
     }
 
-    const saveEdit = async () => {
+    const editUser = async () => {
         if (editingId === null) return;
 
         setLoading(true);
@@ -172,7 +176,8 @@ export default function SearchUser() {
                 }),
             });
 
-            const data = await res.json();
+            //muuntaa vastauksen json jos epäonnistuu palauttaa null
+            const data = await res.json().catch(() => null);
 
             if (!res.ok) {
                 const msg = data?.message || `Virhe (${res.status})`;
@@ -192,9 +197,39 @@ export default function SearchUser() {
         }
     }
 
+    const deleteUser = async (id: number) => {
+        setLoading(true);
+        setError("");
+        setMessage("");
+
+        try {
+            const res = await fetch(`${API}/users/${id}`, { method: "DELETE" });
+
+            //muuntaa vastauksen json jos epäonnistuu palauttaa null
+            const data = await res.json().catch(() => null);
+
+            if (!res.ok) {
+                const msg = data?.message || `Virhe (${res.status})`;
+                throw new Error(msg);
+            }
+
+            // poistaa ilman uutta hakua
+            setUsers((prev) => prev.filter((u) => u.id !== id));
+            setMessage("Käyttäjä poistettu");
+        } catch (err) {
+            setError(err instanceof Error ? err.message : "Tuntematon virhe");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
 
 
     const placeholder = mode === "kaikki" ? "Ei hakusanaa" : mode === "nimellä" ? "Kirjoita nimi" : "Kirjoita id";
+    const totalPages = Math.max(1, Math.ceil(users.length / pagesize));
+    const startIndex = (page - 1) * pagesize;
+    const pagedUsers = users.slice(startIndex, startIndex + pagesize);
 
     return (
         <div className="pt-3 space-y-4">
@@ -341,7 +376,7 @@ export default function SearchUser() {
                 <div>
                     {/* käyttäjä lista */}
                     <ul className="space-y-2">
-                        {users.map((u) => (
+                        {pagedUsers.map((u) => (
                             <li key={u.id} className="border p-2 rounded flex justify-between items-center">
                                 {editingId === u.id ? (
                                     <div className="flex gap-2 items-center">
@@ -357,7 +392,7 @@ export default function SearchUser() {
                                         />
                                         <button
                                             type="button"
-                                            onClick={saveEdit}
+                                            onClick={editUser}
                                             disabled={loading}
                                             className="px-3 py-1 rounded bg-blue-600 text-white disabled:opacity-60"
                                         >
@@ -377,7 +412,7 @@ export default function SearchUser() {
                                             <span className="font-medium">{u.name}</span>{" "}
                                             <span className="text-gray-600">({u.email})</span>
                                         </div>
-                                        <div className="flex items-center gap-4">
+                                        <div className="flex items-center gap-1">
                                             <span className="text-gray-500">#{u.id}</span>
                                             <button
                                                 type="button"
@@ -386,6 +421,14 @@ export default function SearchUser() {
                                             >
                                                 Muokkaa
                                             </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => deleteUser(u.id)}
+                                                className="px-3 py-1 rounded bg-red-600 text-white"
+                                            >
+                                                Poista
+                                            </button>
+
                                         </div>
                                     </>
 
@@ -394,6 +437,32 @@ export default function SearchUser() {
                         ))}
 
                     </ul>
+                    {users.length > 0 && (
+                        <div className="flex items-center justify-between mt-3">
+                            <button
+                                type="button"
+                                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                                disabled={page === 1}
+                                className="px-3 py-1 rounded bg-gray-200 disabled:opacity-50"
+                            >
+                                Edellinen
+                            </button>
+
+                            <div className="text-sm text-gray-700">
+                                Sivu {page} / {totalPages}
+                            </div>
+
+                            <button
+                                type="button"
+                                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                                disabled={page === totalPages}
+                                className="px-3 py-1 rounded bg-gray-200 disabled:opacity-50"
+                            >
+                                Seuraava
+                            </button>
+                        </div>
+                    )}
+
                 </div>
             )}
 

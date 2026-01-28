@@ -1,4 +1,4 @@
-import SearchUser from "./components/searchUser.tsx"
+import SearchUser from "./pages/searchUser.tsx"
 
 function App() {
   return (

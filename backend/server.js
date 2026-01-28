@@ -20,6 +20,31 @@ db.prepare(`
     )
 `).run();
 
+app.delete("/users/:id", (req, res) => {
+    try {
+        const id = Number(req.params.id);
+
+        if (!Number.isInteger(id) || id <= 0) {
+            return res.status(400).json({ message: "Virheellinen id" });
+        }
+
+        // tarkistaa jos käyttäjä löytyy
+        const existing = db.prepare("SELECT id FROM users WHERE id = ?").get(id);
+        if (!existing) {
+            return res.status(404).json({ message: "Käyttäjää ei löytynyt" });
+        }
+
+        db.prepare("DELETE FROM users WHERE id = ?").run(id);
+
+
+        return res.json({ message: "Käyttäjä poistettu" });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Tietokantavirhe" });
+    }
+});
+
+
 app.post("/users", (req, res) => {
     try {
         const { name, email } = req.body;
@@ -112,7 +137,7 @@ app.get("/users", (req, res) => {
 
 app.get("/users/search", (req, res) => {
     try {
-        
+
         // ottaa URL:stä stringin ja poistaa turhat välilyönnit
         const name = String(req.query.name || "").trim();
 
@@ -134,7 +159,11 @@ app.get("/users/search", (req, res) => {
 
 app.get("/users/:id", (req, res) => {
     try {
-        const userId = req.params.id;
+        const userId = Number(req.params.id)
+
+        if (!Number.isInteger(id) || id <= 0) {
+            return res.status(400).json({ message: "Virheellinen id" });
+        }
 
         const user = db.prepare("SELECT * FROM users WHERE id = ?").get(userId);
         if (user) {

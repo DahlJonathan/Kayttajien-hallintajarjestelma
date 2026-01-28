@@ -134,7 +134,7 @@
             }
           ]
         },
-        "description": "voit hakea käyttäjää nimellä"
+        "description": "voit hakea käyttäjää nimellä tai osalla nimellä ja palauttaa kaikki sopivat käyttäjät"
       },
       "response": [
         {
@@ -797,7 +797,7 @@
             "5"
           ]
         },
-        "description": "käyttäjän muokkaus"
+        "description": "käyttäjän muokkaus, voit muokata nimi ja sähköposti"
       },
       "response": [
         {
@@ -907,6 +907,98 @@
           "header": null,
           "cookie": [],
           "body": "{\r\n    \"message\": \"Käyttäjää ei löytynyt\"\r\n}"
+        }
+      ]
+    },
+    {
+      "name": "poista käyttäjä",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"id\":5,\r\n    \"name\":\"Matt\",\r\n    \"email\":\"matt@example.com\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/users/5",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "users",
+            "5"
+          ]
+        },
+        "description": "voit poistaa käyttäjää"
+      },
+      "response": [
+        {
+          "name": "käyttäjä ei löytynyt",
+          "originalRequest": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/users/90",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "users",
+                "90"
+              ]
+            }
+          },
+          "_postman_previewlanguage": "",
+          "header": [],
+          "cookie": [
+            {
+              "expires": "Invalid Date",
+              "domain": "",
+              "path": ""
+            }
+          ],
+          "body": "{\r\n    \"message\": \"Käyttäjää ei löytynyt\"\r\n}"
+        },
+        {
+          "name": "virheelinen id",
+          "originalRequest": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"id\":5,\r\n    \"name\":\"Matt\",\r\n    \"email\":\"matt@example.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/users/m",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "users",
+                "m"
+              ]
+            }
+          },
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{\r\n    \"message\": \"Virheellinen id\"\r\n}"
         }
       ]
     }

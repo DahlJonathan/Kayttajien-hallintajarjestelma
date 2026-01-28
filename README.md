@@ -30,8 +30,6 @@ npm run dev
 
 Backend käynnistyy osoitteeseen `http://localhost:3000` ja frontend osoitteeseen `http://localhost:5173`.
 
-sovellus käyttää SQLite ja sisältää valmiina käyttäjiä testaamista varten.
-
 ## Käyttö
 
 siniseltä valikosta voi valita jos hakee:
@@ -52,4 +50,50 @@ kun painat lisää käyttäjä niin avautuu valikko missä voit laittaa käyttä
 valitse muokkaa nappi sen käyttäjän kohdalla mikä haluat muokata.
 käyttäjän alle avautuu 2 kenttää missä voit muokata nimi ja sähköposti.
 
+## SQLite
+
+sovellus käyttää SQLite ja sisältää valmiina käyttäjiä testaamista varten.
+
+# tietokannan käyttö
+
+Kirjoita terminaaliin komento
+
+```
+cd backend
+sqlite3 database.db
+```
+Tämä avaa SQLite-kehotteen sqlite>
+
+# komennot
+
+näytä kaikki taulukot:
+```
+.tables
+```
+
+näyttää miten taulukko on rakennettu
+```
+.schema "taulukkon nimi"  
+```
+
+näyttää kaikki rivit taulukost
+```
+SELECT * FROM taulukon_nimi;
+```
+
+voit hakea tiettyjä tietoja taulukosta muuttamalla tähti esim:
+```
+SELECT name FROM users;
+```
+tämä näyttää kaikki nimet users taulukosta
+
+voit myös hakea käyttäjä nimi,id tai sähköpostin perusteella:
+```
+sqlite> SELECT * FROM users WHERE name = 'Otto';
+```
+
+poistu
+```
+.quit
+```
 
