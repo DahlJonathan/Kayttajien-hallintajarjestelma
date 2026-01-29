@@ -836,7 +836,7 @@
               "path": ""
             }
           ],
-          "body": ""
+          "body": "{\r\n    \"message\": \"Nimi ja sähköposti ovat pakollisia\"\r\n}"
         },
         {
           "name": "sähköposti käytössä",
@@ -845,7 +845,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"name\": \"Matt\",\r\n  \"email\": \"testi4@example.com\"\r\n}",
+              "raw": "{\r\n  \"name\": \"Matt\",\r\n  \"email\": \"matt@example.com\"\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -874,7 +874,7 @@
               "path": ""
             }
           ],
-          "body": ""
+          "body": "{\r\n    \"message\": \"Sähköposti on jo käytössä\"\r\n}"
         },
         {
           "name": "käyttäjä ei löydy",
@@ -999,6 +999,133 @@
           "header": null,
           "cookie": [],
           "body": "{\r\n    \"message\": \"Virheellinen id\"\r\n}"
+        }
+      ]
+    },
+    {
+      "name": "login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"username\": \"admin\",\r\n  \"password\": \"admin\"\r\n}\r\n"
+        },
+        "url": {
+          "raw": "http://localhost:3000/login",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "login"
+          ]
+        },
+        "description": "Sisäänkirjautuminen admininä"
+      },
+      "response": [
+        {
+          "name": "väärä tunnus",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"username\": \"ad\",\r\n  \"password\": \"admin\"\r\n}\r\n"
+            },
+            "url": {
+              "raw": "http://localhost:3000/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "login"
+              ]
+            }
+          },
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{\r\n    \"message\": \"Väärä käyttäjätunnus tai salasana\"\r\n}"
+        },
+        {
+          "name": "tunnus puuttuu",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"username\": \"\",\r\n  \"password\": \"admin\"\r\n}\r\n"
+            },
+            "url": {
+              "raw": "http://localhost:3000/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "login"
+              ]
+            }
+          },
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{\r\n    \"message\": \"Käyttäjätunnus ja salasana ovat pakollisia\"\r\n}"
+        },
+        {
+          "name": "tietokanttavirhe",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"username\": \"admin\",\r\n  \"password\": \"admin\"\r\n}\r\n"
+            },
+            "url": {
+              "raw": "http://localhost:3000/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "login"
+              ]
+            }
+          },
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{\r\n  \"error\": \"Tietokantavirhe\"\r\n}\r\n"
         }
       ]
     }

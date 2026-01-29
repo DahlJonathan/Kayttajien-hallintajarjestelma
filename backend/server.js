@@ -1,6 +1,10 @@
 import express from 'express';
 import Database from 'better-sqlite3';
 import Cors from 'cors';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+
+
 
 const app = express();
 const PORT = 3000;
@@ -11,7 +15,7 @@ app.use(express.json());
 
 const db = new Database("database.db");
 
-//jos database table ei ole olemassa niin tekee sen
+//jos users table ei ole olemassa niin tekee sen
 db.prepare(`
     CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -19,6 +23,63 @@ db.prepare(`
         email TEXT NOT NULL
     )
 `).run();
+//jos admins table ei ole olemassa niin tekee sen
+db.prepare(`
+    CREATE TABLE IF NOT EXISTS admins (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL UNIQUE,
+        password_hash TEXT NOT NULL
+    )
+`).run();
+
+//oikeassa sovelluksessa tekisin .env tiedosto mihin laittaisin nämä:
+//JWT_SECRET = "pitkä salainen avain"
+//JWT_EXPIRES_IN = "1h"
+const JWT_SECRET = process.env.JWT_SECRET || "secret";
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "1h";
+
+
+
+
+
+app.post("/login", async (req, res) => {
+    try {
+        const { username, password } = req.body;
+
+        if (!username || !password) {
+            return res.status(400).json({ message: "Käyttäjätunnus ja salasana ovat pakollisia" });
+        }
+
+        // hae admin
+        const admin = db
+            .prepare("SELECT * FROM admins WHERE username = ?")
+            .get(username);
+
+        if (!admin) {
+            return res.status(401).json({ message: "Väärä käyttäjätunnus tai salasana" });
+        }
+
+        // tarkista salasana
+        const ok = await bcrypt.compare(password, admin.password_hash);
+        if (!ok) {
+            return res.status(401).json({ message: "Väärä käyttäjätunnus tai salasana" });
+        }
+
+        // luo JWT
+        const token = jwt.sign(
+            { sub: admin.id, role: "admin", username: admin.username },
+            JWT_SECRET,
+            { expiresIn: JWT_EXPIRES_IN }
+        );
+
+        return res.json({ accessToken: token });
+
+    } catch (e) {
+        console.error(e);
+        return res.status(500).json({ error: "Tietokantavirhe" });
+    }
+});
+
 
 app.delete("/users/:id", (req, res) => {
     try {
@@ -161,7 +222,7 @@ app.get("/users/:id", (req, res) => {
     try {
         const userId = Number(req.params.id)
 
-        if (!Number.isInteger(id) || id <= 0) {
+        if (!Number.isInteger(userId) || userId <= 0) {
             return res.status(400).json({ message: "Virheellinen id" });
         }
 

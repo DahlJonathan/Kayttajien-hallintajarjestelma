@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Login from "../auth/login";
 
 type Search = "kaikki" | "nimellä" | "id:llä";
 
@@ -27,6 +28,8 @@ export default function SearchUser() {
     const [editEmail, setEditEmail] = useState("");
     const [page, setPage] = useState(1);
     const pagesize = 5;
+    const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem("adminToken"));
+
 
     function selectedSerch(value: Search) {
         setMode(value);
@@ -227,9 +230,15 @@ export default function SearchUser() {
 
 
     const placeholder = mode === "kaikki" ? "Ei hakusanaa" : mode === "nimellä" ? "Kirjoita nimi" : "Kirjoita id";
+
+    //Laskee kuinka monta sivua tarvitaan kaikkien käyttäjien näyttämiseen.
     const totalPages = Math.max(1, Math.ceil(users.length / pagesize));
     const startIndex = (page - 1) * pagesize;
     const pagedUsers = users.slice(startIndex, startIndex + pagesize);
+
+    if (!loggedIn) {
+        return <Login onLoggedIn={() => setLoggedIn(true)} />;
+    }
 
     return (
         <div className="pt-3 space-y-4">
@@ -249,21 +258,21 @@ export default function SearchUser() {
                         <div className="absolute left-0 mt-2 w-36 bg-white border rounded shadow z-10">
                             <button
                                 type="button"
-                                onClick={() => selectedSerch("kaikki")}
+                                onClick={() => { selectedSerch("kaikki"); setValue(""); }}
                                 className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                             >
                                 Kaikki
                             </button>
                             <button
                                 type="button"
-                                onClick={() => selectedSerch("nimellä")}
+                                onClick={() => { selectedSerch("nimellä"); setValue(""); }}
                                 className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                             >
                                 Nimellä
                             </button>
                             <button
                                 type="button"
-                                onClick={() => selectedSerch("id:llä")}
+                                onClick={() => { selectedSerch("id:llä"); setValue(""); }}
                                 className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                             >
                                 Id:llä
@@ -462,9 +471,20 @@ export default function SearchUser() {
                             </button>
                         </div>
                     )}
-
                 </div>
             )}
+            <div className="flex items-center justify-center">
+                <button
+                    type="button"
+                    onClick={() => {
+                        localStorage.removeItem("adminToken");
+                        setLoggedIn(false);
+                    }}
+                    className="px-3 py-1 rounded bg-red-600 text-white disabled:opacity-60"
+                >
+                    logout
+                </button>
+            </div>
 
         </div>
 

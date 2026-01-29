@@ -1,6 +1,17 @@
-### Käyttäjien Hallintajärjestelmä
+# Käyttäjien Hallintajärjestelmä
 
-## Asennus
+## Teknologiat
+
+- **Frontend**: React + TypeScript + Vite
+- **Backend**: Node.js + Express
+- **Tietokanta**: SQLite
+- **Autentikointi**: JWT + bcrypt
+
+
+### Asennus
+
+repositoriossa on database.db mukana että olisi helpompi testata sovellusta.
+sisältää valmiita käyttäjiä ja admin login
 
 1. Kloonaa repositorio: git clone https://github.com/DahlJonathan/Kayttajien-hallintajarjestelma.git
 2. Siirry **Käyttäjien-hallintajarjestelma** kansioon
@@ -12,7 +23,7 @@ cd backend
 npm install
 ```
 
-## Käynnistys
+### Käynnistys
 
 Sovellus vaatii kaksi erillistä terminaalia:
 
@@ -32,6 +43,11 @@ Backend käynnistyy osoitteeseen `http://localhost:3000` ja frontend osoitteesee
 
 ## Käyttö
 
+### kirjaudu sisään:
+
+käyttäjätunnus: admin
+salasana: admin
+
 siniseltä valikosta voi valita jos hakee:
   - kaikki käyttäjät
   - nimellä
@@ -41,11 +57,11 @@ kun hakee kaikki käyttäjät niin tekstikenttä on poistettu käytöstä ja voi
 kun hakee nimellä niin voi kirjoittaa osittain nimeä tai koko nimeä tekstikenttään ja hakea painamalla hae.
 jos hakee id perusteella niin kirjoittaa vain id (numero) ja hakea painamalla hae. id ei voi olla 0 tai negatiivinen.
 
-# Lisää käyttäjä
+### Lisää käyttäjä
 
 kun painat lisää käyttäjä niin avautuu valikko missä voit laittaa käyttäjän nimi ja sähköposti
 
-# muokkaa käyttäjää
+### muokkaa käyttäjää
 
 valitse muokkaa nappi sen käyttäjän kohdalla mikä haluat muokata.
 käyttäjän alle avautuu 2 kenttää missä voit muokata nimi ja sähköposti.
@@ -54,7 +70,7 @@ käyttäjän alle avautuu 2 kenttää missä voit muokata nimi ja sähköposti.
 
 sovellus käyttää SQLite ja sisältää valmiina käyttäjiä testaamista varten.
 
-# tietokannan käyttö
+### tietokannan käyttö
 
 Kirjoita terminaaliin komento
 
@@ -64,7 +80,7 @@ sqlite3 database.db
 ```
 Tämä avaa SQLite-kehotteen sqlite>
 
-# komennot
+### kommennot
 
 näytä kaikki taulukot:
 ```
@@ -96,4 +112,38 @@ poistu
 ```
 .quit
 ```
+
+### admin 
+
+jos poistaa tietokanta (`backend/database.db`) niin joutuu itse laittaa uusi admin käyttäjä admins taulukkoon
+
+ajaa terminaalissa
+```
+cd backend
+node -e "const bcrypt=require('bcrypt'); bcrypt.hash('admin', 12).then(h=>console.log(h))"
+```
+
+Kopioi hash esim. $2b$12$fsgfddhhghjhfkfuyhsh.
+
+avaa tietokanta
+```
+sqlite3 database.db
+```
+
+lisää käyttäjä admins taulukkoon
+```
+INSERT INTO admins (username, password_hash)
+VALUES ('admin', 'KOPIOITU_HASH_TAHAN');
+```
+
+poistu tietokannasta
+```
+.quit
+```
+
+nyt on uusi admin asetettu käyttäjänimellä admin ja salasanalla admin.
+
+
+
+
 
