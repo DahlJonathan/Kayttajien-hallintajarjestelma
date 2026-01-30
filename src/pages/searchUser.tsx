@@ -56,6 +56,8 @@ export default function SearchUser() {
         setLoading(true);
         setHasSearched(true);
         setMessage("");
+        setAddForm(false);
+
 
 
         try {
@@ -291,6 +293,7 @@ export default function SearchUser() {
                         className="flex-1 border rounded px-3 py-2 focus:outline-none focus:ring bg-white disabled:bg-gray-200 disabled:cursor-not-allowed"
                     />
                     <button
+
                         type="submit"
                         disabled={loading}
                         className="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700 disabled:opacity-60"
