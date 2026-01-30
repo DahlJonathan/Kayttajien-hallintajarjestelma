@@ -64,7 +64,7 @@ kun painat lisää käyttäjä niin avautuu valikko missä voit laittaa käyttä
 ### muokkaa käyttäjää
 
 valitse muokkaa nappi sen käyttäjän kohdalla mikä haluat muokata.
-käyttäjän alle avautuu 2 kenttää missä voit muokata nimi ja sähköposti.
+käyttäjän kohdalla avautuu 2 kenttää missä voit muokata nimi ja sähköposti.
 
 ## SQLite
 
@@ -116,6 +116,7 @@ poistu
 ### admin 
 
 jos poistaa tietokanta (`backend/database.db`) niin joutuu itse laittaa uusi admin käyttäjä admins taulukkoon
+käynnistä ja sammuta backend niin se luo users/admins taulukot uudestaan
 
 ajaa terminaalissa
 ```
@@ -133,7 +134,7 @@ sqlite3 database.db
 lisää käyttäjä admins taulukkoon
 ```
 INSERT INTO admins (username, password_hash)
-VALUES ('admin', 'KOPIOITU_HASH_TAHAN');
+VALUES ('admin', 'KOPIOITU_HASH_TÄHÄN');
 ```
 
 poistu tietokannasta
