@@ -31,7 +31,7 @@ export default function SearchUser() {
     const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem("adminToken"));
 
 
-    function selectedSerch(value: Search) {
+    const selectedSerch = (value: Search) => {
         setMode(value);
         setOpen(false);
         setHasSearched(false);
@@ -50,7 +50,7 @@ export default function SearchUser() {
 
 
     //haku serveriltä hakuvalinnan perusteella
-    async function handleSearch(e: React.FormEvent) {
+    const handleSearch = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
         setLoading(true);
