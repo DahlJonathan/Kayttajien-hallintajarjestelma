@@ -30,7 +30,6 @@ export default function SearchUser() {
     const pagesize = 5;
     const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem("adminToken"));
 
-
     const selectedSerch = (value: Search) => {
         setMode(value);
         setOpen(false);
@@ -45,11 +44,10 @@ export default function SearchUser() {
         setEditName(u.name);
         setEditEmail(u.email);
         setError("");
-        setMessage("");
+
     };
 
-
-    //haku serveriltä hakuvalinnan perusteella
+    // Haku serveriltä hakuvalinnan perusteella
     const handleSearch = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
@@ -57,8 +55,6 @@ export default function SearchUser() {
         setHasSearched(true);
         setMessage("");
         setAddForm(false);
-
-
 
         try {
             let url = ""
@@ -94,7 +90,7 @@ export default function SearchUser() {
 
             const res = await fetch(url)
 
-            //muuntaa vastauksen json ja jos epäonnistuu palauttaa null
+            // Muuntaa vastauksen json ja jos epäonnistuu palauttaa null
             const data = await res.json().catch(() => null)
 
             if (!res.ok) {
@@ -103,11 +99,11 @@ export default function SearchUser() {
             }
 
             if (mode === "kaikki" || mode === "nimellä") {
-                //palauttaa lista
+                // Palauttaa lista
                 setUsers(data as User[]);
                 setPage(1);
             } else if (mode === "id:llä") {
-                //palauttaa yksi käyttäjä
+                // Palauttaa yksi käyttäjä
                 setUsers([data as User]);
                 setPage(1);
             }
@@ -117,7 +113,6 @@ export default function SearchUser() {
             } else {
                 setMessage("Käyttäjät haettu");
             }
-
 
         } catch (err) {
             const message = err instanceof Error ? err.message : "Tuntematon virhe";
@@ -133,7 +128,6 @@ export default function SearchUser() {
 
         setLoading(true);
         setError("");
-        setMessage("");
 
         try {
             const res = await fetch(`${API}/users/${editingId}`, {
@@ -142,7 +136,7 @@ export default function SearchUser() {
                 body: JSON.stringify({ name: editName, email: editEmail }),
             });
 
-            //muuntaa vastauksen json jos epäonnistuu palauttaa null
+            // Muuntaa vastauksen json jos epäonnistuu palauttaa null
             const data = await res.json().catch(() => null);
 
             if (!res.ok) {
@@ -150,7 +144,7 @@ export default function SearchUser() {
                 throw new Error(msg);
             }
 
-            // päivitä lista ilman uutta hakua
+            // Päivitä lista ilman uutta hakua
             setUsers((prev) => prev.map((u) => (u.id === editingId ? data : u)));
 
             setEditingId(null);
@@ -161,7 +155,6 @@ export default function SearchUser() {
             setLoading(false);
         }
     };
-
 
     const addUser = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -181,7 +174,7 @@ export default function SearchUser() {
                 }),
             });
 
-            //muuntaa vastauksen json jos epäonnistuu palauttaa null
+            // Muuntaa vastauksen json jos epäonnistuu palauttaa null
             const data = await res.json().catch(() => null);
 
             if (!res.ok) {
@@ -210,7 +203,7 @@ export default function SearchUser() {
         try {
             const res = await fetch(`${API}/users/${id}`, { method: "DELETE" });
 
-            //muuntaa vastauksen json jos epäonnistuu palauttaa null
+            // Muuntaa vastauksen json jos epäonnistuu palauttaa null
             const data = await res.json().catch(() => null);
 
             if (!res.ok) {
@@ -218,7 +211,7 @@ export default function SearchUser() {
                 throw new Error(msg);
             }
 
-            // poistaa ilman uutta hakua
+            // Poistaa ilman uutta hakua
             setUsers((prev) => prev.filter((u) => u.id !== id));
             setMessage("Käyttäjä poistettu");
         } catch (err) {
@@ -228,12 +221,9 @@ export default function SearchUser() {
         }
     };
 
-
-
-
     const placeholder = mode === "kaikki" ? "Ei hakusanaa" : mode === "nimellä" ? "Kirjoita nimi" : "Kirjoita id";
 
-    //Laskee kuinka monta sivua tarvitaan kaikkien käyttäjien näyttämiseen.
+    // Laskee kuinka monta sivua tarvitaan kaikkien käyttäjien näyttämiseen.
     const totalPages = Math.max(1, Math.ceil(users.length / pagesize));
     const startIndex = (page - 1) * pagesize;
     const pagedUsers = users.slice(startIndex, startIndex + pagesize);
@@ -324,7 +314,6 @@ export default function SearchUser() {
             )}
 
             {/* lisää käyttäjä */}
-
             {addForm && (
                 <form onSubmit={addUser} className="space-y-3 max-w-md">
                     <div>
@@ -395,25 +384,25 @@ export default function SearchUser() {
                                         <input
                                             value={editName}
                                             onChange={(e) => setEditName(e.target.value)}
-                                            className="border rounded px-2 py-1"
+                                            className="border rounded px-2 py-1 w-42"
                                         />
                                         <input
                                             value={editEmail}
                                             onChange={(e) => setEditEmail(e.target.value)}
-                                            className="border rounded px-2 py-1"
+                                            className="border rounded px-2 py-1 w-42"
                                         />
                                         <button
                                             type="button"
                                             onClick={editUser}
                                             disabled={loading}
-                                            className="px-3 py-1 rounded bg-blue-600 text-white disabled:opacity-60"
+                                            className="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60"
                                         >
                                             Tallenna
                                         </button>
                                         <button
                                             type="button"
                                             onClick={() => setEditingId(null)}
-                                            className="px-3 py-1 rounded bg-gray-200"
+                                            className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-60"
                                         >
                                             Peruuta
                                         </button>
@@ -429,14 +418,14 @@ export default function SearchUser() {
                                             <button
                                                 type="button"
                                                 onClick={() => startEdit(u)}
-                                                className="px-3 py-1 rounded bg-yellow-500 text-white"
+                                                className="px-3 py-1 rounded bg-yellow-500 text-white hover:bg-yellow-600 disabled:opacity-60"
                                             >
                                                 Muokkaa
                                             </button>
                                             <button
                                                 type="button"
                                                 onClick={() => deleteUser(u.id)}
-                                                className="px-3 py-1 rounded bg-red-600 text-white"
+                                                className="px-3 py-1 rounded bg-red-600 text-white hover:bg-red-700 disabled:opacity-60"
                                             >
                                                 Poista
                                             </button>
@@ -447,7 +436,6 @@ export default function SearchUser() {
                                 )}
                             </li>
                         ))}
-
                     </ul>
                     {users.length > 0 && (
                         <div className="flex items-center justify-between mt-3">
@@ -455,7 +443,7 @@ export default function SearchUser() {
                                 type="button"
                                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                                 disabled={page === 1}
-                                className="px-3 py-1 rounded bg-gray-200 disabled:opacity-50"
+                                className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
                             >
                                 Edellinen
                             </button>
@@ -468,7 +456,7 @@ export default function SearchUser() {
                                 type="button"
                                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                                 disabled={page === totalPages}
-                                className="px-3 py-1 rounded bg-gray-200 disabled:opacity-50"
+                                className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
                             >
                                 Seuraava
                             </button>
@@ -483,15 +471,12 @@ export default function SearchUser() {
                         localStorage.removeItem("adminToken");
                         setLoggedIn(false);
                     }}
-                    className="px-3 py-1 rounded bg-red-600 text-white disabled:opacity-60"
+                    className="px-3 py-1 rounded bg-red-600 text-white hover:bg-red-700 disabled:opacity-60"
                 >
                     logout
                 </button>
             </div>
-
         </div>
-
-
     );
 
 }

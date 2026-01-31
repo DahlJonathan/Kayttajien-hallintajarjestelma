@@ -18,7 +18,7 @@ export default function Login({ onLoggedIn }: Props) {
         setLoading(true);
 
         try {
-            //lähettää käyttäjänimi ja salasana backendiin joka tarkistaan niitä ja palauttaa token
+            // Lähettää käyttäjänimi ja salasana backendiin joka tarkistaan niitä ja palauttaa token
             const res = await fetch(`${API}/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -28,14 +28,14 @@ export default function Login({ onLoggedIn }: Props) {
                 }),
             });
 
-            //muuntaa vastauksen json jos epäonnistuu palauttaa null
+            // Muuntaa vastauksen json jos epäonnistuu palauttaa null
             const data: any = await res.json().catch(() => ({}));
 
             if (!res.ok) {
                 setMessage(data?.message || `Virhe (${res.status})`);
-                return; 
+                return;
             }
-            //tallentaa token localstorage
+            // Tallentaa token localstorage
             localStorage.setItem("adminToken", data.accessToken);
             onLoggedIn?.();
         } catch (err) {
@@ -74,7 +74,6 @@ export default function Login({ onLoggedIn }: Props) {
                 >
                     {loading ? "Kirjaudutaan..." : "Kirjaudu sisään"}
                 </button>
-
                 {message && <p className="text-red-600">{message}</p>}
             </form>
         </div>

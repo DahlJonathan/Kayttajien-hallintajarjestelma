@@ -4,18 +4,15 @@ import Cors from 'cors';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
-
-
 const app = express();
 const PORT = 3000;
 
 app.use(Cors({ origin: "http://localhost:5173" }));
 app.use(express.json());
 
-
 const db = new Database("database.db");
 
-//jos users table ei ole olemassa niin tekee sen
+// Jos users table ei ole olemassa niin tekee sen
 db.prepare(`
     CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -23,7 +20,7 @@ db.prepare(`
         email TEXT NOT NULL
     )
 `).run();
-//jos admins table ei ole olemassa niin tekee sen
+// Jos admins table ei ole olemassa niin tekee sen
 db.prepare(`
     CREATE TABLE IF NOT EXISTS admins (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -32,15 +29,11 @@ db.prepare(`
     )
 `).run();
 
-//oikeassa sovelluksessa tekisin .env tiedosto mihin laittaisin nämä:
-//JWT_SECRET = "pitkä salainen avain"
-//JWT_EXPIRES_IN = "1h"
+// Oikeassa sovelluksessa tekisin .env tiedosto mihin laittaisin nämä:
+// JWT_SECRET = "pitkä salainen avain"
+// JWT_EXPIRES_IN = "1h"
 const JWT_SECRET = process.env.JWT_SECRET || "secret";
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "1h";
-
-
-
-
 
 app.post("/login", async (req, res) => {
     try {
@@ -50,7 +43,7 @@ app.post("/login", async (req, res) => {
             return res.status(400).json({ message: "Käyttäjätunnus ja salasana ovat pakollisia" });
         }
 
-        // hae admin
+        // Hae admin
         const admin = db
             .prepare("SELECT * FROM admins WHERE username = ?")
             .get(username);
@@ -59,13 +52,13 @@ app.post("/login", async (req, res) => {
             return res.status(401).json({ message: "Väärä käyttäjätunnus tai salasana" });
         }
 
-        // tarkista salasana
+        // Tarkista salasana
         const ok = await bcrypt.compare(password, admin.password_hash);
         if (!ok) {
             return res.status(401).json({ message: "Väärä käyttäjätunnus tai salasana" });
         }
 
-        // luo JWT
+        // Luo JWT
         const token = jwt.sign(
             { sub: admin.id, role: "admin", username: admin.username },
             JWT_SECRET,
@@ -80,7 +73,6 @@ app.post("/login", async (req, res) => {
     }
 });
 
-
 app.delete("/users/:id", (req, res) => {
     try {
         const id = Number(req.params.id);
@@ -89,7 +81,7 @@ app.delete("/users/:id", (req, res) => {
             return res.status(400).json({ message: "Virheellinen id" });
         }
 
-        // tarkistaa jos käyttäjä löytyy
+        // Tarkistaa jos käyttäjä löytyy
         const existing = db.prepare("SELECT id FROM users WHERE id = ?").get(id);
         if (!existing) {
             return res.status(404).json({ message: "Käyttäjää ei löytynyt" });
@@ -97,14 +89,12 @@ app.delete("/users/:id", (req, res) => {
 
         db.prepare("DELETE FROM users WHERE id = ?").run(id);
 
-
         return res.json({ message: "Käyttäjä poistettu" });
     } catch (err) {
         console.error(err);
         return res.status(500).json({ message: "Tietokantavirhe" });
     }
 });
-
 
 app.post("/users", (req, res) => {
     try {
@@ -116,7 +106,7 @@ app.post("/users", (req, res) => {
             });
         }
 
-        // tarkistaa onko käyttyäjää olemassa sähköpostin perusteella
+        // Tarkistaa onko käyttyäjää olemassa sähköpostin perusteella
         const existingUser = db
             .prepare("SELECT id FROM users WHERE email = ?")
             .get(email);
@@ -127,7 +117,7 @@ app.post("/users", (req, res) => {
             });
         }
 
-        // lisää käyttäjä
+        // Lisää käyttäjä
         const result = db
             .prepare("INSERT INTO users (name, email) VALUES (?, ?)")
             .run(name, email);
@@ -160,13 +150,13 @@ app.put("/users/:id", (req, res) => {
             return res.status(400).json({ message: "Nimi ja sähköposti ovat pakollisia" });
         }
 
-        // tarkista että käyttäjä on olemassa
+        // Tarkista että käyttäjä on olemassa
         const existing = db.prepare("SELECT id FROM users WHERE id = ?").get(id);
         if (!existing) {
             return res.status(404).json({ message: "Käyttäjää ei löytynyt" });
         }
 
-        // tarkista että email ei ole käytössä toisella käyttäjällä
+        // Tarkista että email ei ole käytössä toisella käyttäjällä
         const existingEmail = db
             .prepare("SELECT id FROM users WHERE email = ? AND id != ?")
             .get(email, id);
@@ -185,7 +175,6 @@ app.put("/users/:id", (req, res) => {
     }
 });
 
-
 app.get("/users", (req, res) => {
     try {
         const users = db.prepare("SELECT * FROM users").all();
@@ -199,7 +188,7 @@ app.get("/users", (req, res) => {
 app.get("/users/search", (req, res) => {
     try {
 
-        // ottaa URL:stä stringin ja poistaa turhat välilyönnit
+        // Ottaa URL:stä stringin ja poistaa turhat välilyönnit
         const name = String(req.query.name || "").trim();
 
         if (!name) {
@@ -216,7 +205,6 @@ app.get("/users/search", (req, res) => {
         return res.status(500).json({ message: "Tietokantavirhe" });
     }
 });
-
 
 app.get("/users/:id", (req, res) => {
     try {
