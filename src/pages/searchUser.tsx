@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Login from "../auth/login";
 import authFetch from "../utils/api.ts"
 
@@ -30,6 +30,20 @@ export default function SearchUser() {
     const [page, setPage] = useState(1);
     const pagesize = 5;
     const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem("adminToken"));
+
+    useEffect(() => {
+        const fetchAll = async () => {
+            const res = await authFetch(`${API}/users`);
+
+            // Muuntaa vastauksen json ja jos epäonnistuu palauttaa null
+            const data = await res.json().catch(() => null)
+            setUsers(data as User[]);
+            setPage(1);
+            setHasSearched(true);
+        };
+
+        fetchAll();
+    }, [])
 
     const selectedSerch = (value: Search) => {
         setMode(value);
