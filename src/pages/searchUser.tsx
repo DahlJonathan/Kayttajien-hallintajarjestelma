@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Login from "../auth/login";
+import authFetch from "../utils/api.ts"
 
 type Search = "kaikki" | "nimellä" | "id:llä";
 
@@ -88,7 +89,7 @@ export default function SearchUser() {
                 url = `${API}/users/search?name=${value}`
             }
 
-            const res = await fetch(url)
+            const res = await authFetch(url);
 
             // Muuntaa vastauksen json ja jos epäonnistuu palauttaa null
             const data = await res.json().catch(() => null)
@@ -130,10 +131,12 @@ export default function SearchUser() {
         setError("");
 
         try {
-            const res = await fetch(`${API}/users/${editingId}`, {
+            const res = await authFetch(`${API}/users/${editingId}`, {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name: editName, email: editEmail }),
+                body: JSON.stringify({
+                    name: editName,
+                    email: editEmail
+                }),
             });
 
             // Muuntaa vastauksen json jos epäonnistuu palauttaa null
@@ -163,11 +166,8 @@ export default function SearchUser() {
         setMessage("");
 
         try {
-            const res = await fetch(`${API}/users`, {
+            const res = await authFetch(`${API}/users`, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
                 body: JSON.stringify({
                     name,
                     email,
@@ -201,7 +201,9 @@ export default function SearchUser() {
         setMessage("");
 
         try {
-            const res = await fetch(`${API}/users/${id}`, { method: "DELETE" });
+            const res = await authFetch(`${API}/users/${id}`, {
+                method: "DELETE"
+            });
 
             // Muuntaa vastauksen json jos epäonnistuu palauttaa null
             const data = await res.json().catch(() => null);

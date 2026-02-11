@@ -13,6 +13,7 @@ export default function Login({ onLoggedIn }: Props) {
     const [loading, setLoading] = useState(false);
 
     async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
+        // Pysäyttää selaimen päivittämistä niin react hoitaa sen
         e.preventDefault();
         setMessage("");
         setLoading(true);

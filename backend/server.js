@@ -1,8 +1,9 @@
 import express from 'express';
-import Database from 'better-sqlite3';
 import Cors from 'cors';
-import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import jwt from "jsonwebtoken";
+import verifyToken from "./middleware/auth.js"
+import db from "./database.js"
 
 const app = express();
 const PORT = 3000;
@@ -10,28 +11,6 @@ const PORT = 3000;
 app.use(Cors({ origin: "http://localhost:5173" }));
 app.use(express.json());
 
-const db = new Database("database.db");
-
-// Jos users table ei ole olemassa niin tekee sen
-db.prepare(`
-    CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        email TEXT NOT NULL
-    )
-`).run();
-// Jos admins table ei ole olemassa niin tekee sen
-db.prepare(`
-    CREATE TABLE IF NOT EXISTS admins (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT NOT NULL UNIQUE,
-        password_hash TEXT NOT NULL
-    )
-`).run();
-
-// Oikeassa sovelluksessa tekisin .env tiedosto mihin laittaisin nämä:
-// JWT_SECRET = "pitkä salainen avain"
-// JWT_EXPIRES_IN = "1h"
 const JWT_SECRET = process.env.JWT_SECRET || "secret";
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "1h";
 
@@ -72,6 +51,8 @@ app.post("/login", async (req, res) => {
         return res.status(500).json({ error: "Tietokantavirhe" });
     }
 });
+
+app.use(verifyToken);
 
 app.delete("/users/:id", (req, res) => {
     try {
