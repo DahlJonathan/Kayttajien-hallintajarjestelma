@@ -32,18 +32,19 @@ export default function SearchUser() {
     const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem("adminToken"));
 
     useEffect(() => {
-        const fetchAll = async () => {
-            const res = await authFetch(`${API}/users`);
-
-            // Muuntaa vastauksen json ja jos epäonnistuu palauttaa null
-            const data = await res.json().catch(() => null)
-            setUsers(data as User[]);
-            setPage(1);
-            setHasSearched(true);
-        };
-
-        fetchAll();
+        fetchAllUsers();
     }, [])
+
+    const fetchAllUsers = async () => {
+        const res = await authFetch(`${API}/users`);
+
+        // Muuntaa vastauksen json ja jos epäonnistuu palauttaa null
+        const data = await res.json().catch(() => null)
+
+        setUsers(data as User[]);
+        setPage(1);
+        setHasSearched(true);
+    };
 
     const selectedSerch = (value: Search) => {
         setMode(value);
@@ -200,6 +201,8 @@ export default function SearchUser() {
             setEmail("");
             setAddForm(false);
             setMessage("Käyttäjä lisätty");
+            fetchAllUsers();
+            setHasSearched(true);
 
         } catch (err) {
             const message = err instanceof Error ? err.message : "Tuntematon virhe";
